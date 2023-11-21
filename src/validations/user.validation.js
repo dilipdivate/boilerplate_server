@@ -3,7 +3,8 @@ const { password, objectById } = require('./custom.validation');
 
 const createUser = {
   body: Joi.object().keys({
-    name: Joi.string().required().empty(''),
+    firstName: Joi.string().required().empty(''),
+    lastName: Joi.string().required().empty(''),
     email: Joi.string().required().email().empty(''),
     password: Joi.string()
       .min(8)
@@ -13,6 +14,11 @@ const createUser = {
       .empty('')
       .strict(),
     confirmPassword: Joi.string().valid(Joi.ref('password')).required().custom(password).empty('').strict(),
+    city: Joi.string().required().empty(''),
+    state: Joi.string().required().empty(''),
+    country: Joi.string().required().empty(''),
+    occupation: Joi.string().required().empty(''),
+    phoneNumber: Joi.number().required().integer(),
     avatar: Joi.object().keys({
       public_id: Joi.string(),
       url: Joi.string(),

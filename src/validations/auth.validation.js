@@ -3,10 +3,16 @@ const { password } = require('./custom.validation');
 
 const register = {
   body: Joi.object().keys({
-    name: Joi.string().required(),
-    email: Joi.string().required().email(),
+    firstName: Joi.string().required().empty(''),
+    lastName: Joi.string().required().empty(''),
+    email: Joi.string().required().email().empty(''),
     password: Joi.string().required().custom(password),
     confirmPassword: Joi.string().valid(Joi.ref('password')).required().custom(password).strict(),
+    city: Joi.string().required().empty(''),
+    state: Joi.string().required().empty(''),
+    country: Joi.string().required().empty(''),
+    occupation: Joi.string().required().empty(''),
+    phoneNumber: Joi.number().required().integer(),
     avatar: Joi.object().keys({
       public_id: Joi.string(),
       url: Joi.string(),
@@ -37,6 +43,12 @@ const logout = {
 const refreshTokens = {
   body: Joi.object().keys({
     refreshToken: Joi.string().required(),
+  }),
+};
+
+const revokeTokens = {
+  body: Joi.object().keys({
+    revokeToken: Joi.string().required(),
   }),
 };
 
@@ -74,6 +86,7 @@ module.exports = {
   login,
   logout,
   refreshTokens,
+  revokeTokens,
   changePassword,
   forgotPassword,
   resetPassword,

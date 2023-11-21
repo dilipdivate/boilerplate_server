@@ -8,13 +8,14 @@ const register = catchAsync(async (req, res) => {
   const verifyEmailToken = await tokenService.generateVerifyEmailToken(user);
   await emailService.sendVerificationEmail(user.email, verifyEmailToken);
 
-  res.status(httpStatus.CREATED).send({ user, registerToken });
+  res.status(httpStatus.CREATED).send({ user, registerToken, verifyEmailToken });
 });
 
 const login = catchAsync(async (req, res) => {
   const { email, password } = req.body;
   const user = await authService.loginUserWithEmailAndPassword(email, password);
   const tokens = await tokenService.generateAuthTokens(user);
+  tokenService.setTokenCookie(res, tokens.accessToken, tokens.refreshToken);
   res.send({ user, tokens });
 });
 
@@ -25,6 +26,12 @@ const logout = catchAsync(async (req, res) => {
 
 const refreshTokens = catchAsync(async (req, res) => {
   const tokens = await authService.refreshAuth(req.body.refreshToken);
+  tokenService.setTokenCookie(res, tokens.accessToken, tokens.refreshToken);
+  res.send({ ...tokens });
+});
+
+const revokeTokens = catchAsync(async (req, res) => {
+  const tokens = await authService.revokeAuth(req.body.revokeToken);
   res.send({ ...tokens });
 });
 
@@ -60,6 +67,7 @@ module.exports = {
   login,
   logout,
   refreshTokens,
+  revokeTokens,
   changePassword,
   forgotPassword,
   resetPassword,

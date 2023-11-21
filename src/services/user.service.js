@@ -1,6 +1,8 @@
 const httpStatus = require('http-status');
+const tokenService = require('./token.service');
 const { User } = require('../models');
 const ApiError = require('../utils/ApiError');
+const { tokenTypes } = require('../config/tokens');
 
 /**
  * Create a user
@@ -40,6 +42,26 @@ const queryUsers = async (filter, options) => {
  */
 const getUserById = async (id) => {
   return User.findById(id);
+};
+
+/**
+ * Get user by id
+ * @param {ObjectId} defaultReturnObject
+ * @returns {Promise<User>}
+ */
+const getUserFromToken = async (getToken) => {
+  const defaultReturnObject = { authenticated: false, user: null };
+  try {
+    const token = String(getToken);
+    const refreshTokenDoc = await tokenService.verifyToken(token, tokenTypes.REFRESH);
+    const user = await getUserById(refreshTokenDoc.user);
+    if (!user) {
+      throw new Error();
+    }
+    return user;
+  } catch (err) {
+    throw new ApiError(httpStatus.BAD_REQUEST, defaultReturnObject);
+  }
 };
 
 /**
@@ -91,4 +113,5 @@ module.exports = {
   getUserByEmail,
   updateUserById,
   deleteUserById,
+  getUserFromToken,
 };

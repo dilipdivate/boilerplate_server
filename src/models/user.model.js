@@ -8,11 +8,18 @@ const { roles } = require('../config/roles');
 
 const userSchema = mongoose.Schema(
   {
-    name: {
+    firstName: {
       type: String,
-      required: [true, 'Pleae Enter your name'],
+      required: [true, 'Pleae Enter your firstname'],
       maxLength: [30, 'Name should be maximum of 30 characters'],
-      minLength: [4, 'Name should be atleast 4 characters long'],
+      minLength: [2, 'Name should be atleast 4 characters long'],
+      trim: true,
+    },
+    lastName: {
+      type: String,
+      required: [true, 'Pleae Enter your lastname'],
+      maxLength: [30, 'Name should be maximum of 30 characters'],
+      minLength: [2, 'Name should be atleast 4 characters long'],
       trim: true,
     },
     email: {
@@ -51,6 +58,41 @@ const userSchema = mongoose.Schema(
         }
       },
       private: true, // used by the toJSON plugin
+    },
+    city: {
+      type: String,
+      required: [true, 'Pleae Enter your city'],
+      maxLength: [30, 'Name should be maximum of 30 characters'],
+      minLength: [4, 'Name should be atleast 4 characters long'],
+      trim: true,
+    },
+    state: {
+      type: String,
+      required: [true, 'Pleae Enter your state'],
+      maxLength: [30, 'Name should be maximum of 30 characters'],
+      minLength: [4, 'Name should be atleast 4 characters long'],
+      trim: true,
+    },
+    country: {
+      type: String,
+      required: [true, 'Pleae Enter your country'],
+      maxLength: [30, 'Name should be maximum of 30 characters'],
+      minLength: [4, 'Name should be atleast 4 characters long'],
+      trim: true,
+    },
+    occupation: {
+      type: String,
+      required: [true, 'Pleae Enter your occupation'],
+      maxLength: [30, 'Name should be maximum of 30 characters'],
+      minLength: [4, 'Name should be atleast 4 characters long'],
+      trim: true,
+    },
+    phoneNumber: {
+      type: Number,
+      required: [true, 'Pleae Enter your phonenumber'],
+      maxLength: [10, 'Name should be maximum of 10 characters'],
+      minLength: [10, 'Name should be atleast 10 characters long'],
+      trim: true,
     },
     avatar: {
       public_id: { type: String },

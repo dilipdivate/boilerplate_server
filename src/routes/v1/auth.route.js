@@ -7,14 +7,15 @@ const { requiresToBeLoggedIn } = require('../../middlewares/auth');
 const router = express.Router();
 
 router.post('/register', validate(authValidation.register), [authController.register, authController.sendVerificationEmail]);
-router.post('/login', validate(authValidation.login), authController.login);
-router.post('/logout', validate(authValidation.logout), authController.logout);
-router.post('/refresh-tokens', validate(authValidation.refreshTokens), authController.refreshTokens);
+router.post('/signin', validate(authValidation.login), authController.login);
+router.post('/signout', validate(authValidation.logout), authController.logout);
+router.post('/refresh-token', validate(authValidation.refreshTokens), authController.refreshTokens);
+router.post('/revoke-token', validate(authValidation.revokeTokens), authController.revokeTokens);
 router.post('/forgot-password', validate(authValidation.forgotPassword), authController.forgotPassword);
-router.post('/change-password', validate(authValidation.changePassword), authController.changePassword);
-router.post('/reset-password', validate(authValidation.resetPassword), authController.resetPassword);
+router.patch('/change-password', validate(authValidation.changePassword), authController.changePassword);
+router.patch('/reset-password', validate(authValidation.resetPassword), authController.resetPassword);
 router.post('/send-verification-email', requiresToBeLoggedIn(), authController.sendVerificationEmail);
-router.get('/verify-email', validate(authValidation.verifyEmail), authController.verifyEmail);
+router.post('/verify-email', validate(authValidation.verifyEmail), authController.verifyEmail);
 
 module.exports = router;
 

@@ -16,6 +16,14 @@ const getUsers = catchAsync(async (req, res) => {
   res.send(result);
 });
 
+
+const getUserFromToken = catchAsync(async (req, res) => {
+  console.log(req?.cookies?.token)
+  console.log(req)
+  const result = await userService.getUserFromToken(req?.cookies?.token);
+  res.send(result);
+});
+
 const getUser = catchAsync(async (req, res) => {
   const user = await userService.getUserById(req.params.userId);
   if (!user) {
@@ -40,4 +48,5 @@ module.exports = {
   getUser,
   updateUser,
   deleteUser,
+  getUserFromToken,
 };

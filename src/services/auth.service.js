@@ -56,6 +56,23 @@ const refreshAuth = async (refreshToken) => {
 };
 
 /**
+ * Revoke auth tokens
+ * @param {string} revokeToken
+ * @returns {Promise<Object>}
+ */
+const revokeAuth = async (revokeToken) => {
+  const revokeTokenDoc = await Token.findOne({
+    token: revokeToken,
+    type: tokenTypes.REFRESH,
+    blacklisted: false,
+  });
+  if (!revokeTokenDoc) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Not found');
+  }
+  await revokeTokenDoc.remove();
+};
+
+/**
  * Change password
  * @param {string} email
  * @param {string} oldPassword
@@ -105,12 +122,14 @@ const verifyEmail = async (verifyEmailToken) => {
   try {
     const verifyEmailTokenDoc = await tokenService.verifyToken(verifyEmailToken, tokenTypes.VERIFY_EMAIL);
     const user = await userService.getUserById(verifyEmailTokenDoc.user);
+    console.log('DilipUser:', user);
     if (!user) {
       throw new Error();
     }
     await Token.deleteMany({ user: user.id, type: tokenTypes.VERIFY_EMAIL });
     await userService.updateUserById(user.id, { isEmailVerified: true });
   } catch (error) {
+    console.log('DilipError:', error);
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Email verification failed');
   }
 };
@@ -119,6 +138,7 @@ module.exports = {
   loginUserWithEmailAndPassword,
   logout,
   refreshAuth,
+  revokeAuth,
   changePassword,
   resetPassword,
   verifyEmail,

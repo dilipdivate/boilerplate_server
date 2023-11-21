@@ -46,6 +46,25 @@ const saveToken = async (token, userId, expires, type, blacklisted = false) => {
 };
 
 /**
+ * Save a token
+ * @param {string} accessToken
+ * @param {string} refreshToken
+ * @param {Object} res
+ */
+const setTokenCookie = (res, accessToken, refreshToken) => {
+  const accessTokenExpires = moment().add(config.jwt.accessExpirationMinutes, 'minutes');
+  const refreshTokenExpires = moment().add(config.jwt.refreshExpirationDays, 'days');
+
+  res.cookie('token', accessToken, accessTokenExpires);
+  res.cookie('access_token', accessToken, { accessTokenExpires, httpOnly: false });
+  res.cookie('refresh_token', refreshToken, { refreshTokenExpires, httpOnly: false });
+  res.cookie('logged_in', true, {
+    ...accessTokenExpires,
+    httpOnly: false,
+  });
+};
+
+/**
  * Verify token and return token doc (or throw an error if it is not valid)
  * @param {string} token
  * @param {string} type
@@ -114,6 +133,7 @@ const generateResetPasswordToken = async (email) => {
 const generateVerifyEmailToken = async (user) => {
   const expires = moment().add(config.jwt.verifyEmailExpirationMinutes, 'minutes');
   const verifyEmailToken = generateToken(user.id, expires, tokenTypes.VERIFY_EMAIL);
+  console.log('VerfiyTkn:', verifyEmailToken);
   await saveToken(verifyEmailToken, user.id, expires, tokenTypes.VERIFY_EMAIL);
   return verifyEmailToken;
 };
@@ -122,6 +142,7 @@ module.exports = {
   generateToken,
   saveToken,
   verifyToken,
+  setTokenCookie,
   generateAuthTokens,
   generateResetPasswordToken,
   generateVerifyEmailToken,

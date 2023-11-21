@@ -11,10 +11,12 @@ router
   .post(requiresToBeLoggedIn('manageUsers'), validate(userValidation.createUser), userController.createUser)
   .get(requiresToBeLoggedIn('getUsers'), validate(userValidation.getUsers), userController.getUsers);
 
+router.route('/me').get(requiresToBeLoggedIn('getUsers'), userController.getUserFromToken);
+
 router
   .route('/:userId')
   .get(requiresToBeLoggedIn('getUsers'), validate(userValidation.getUser), userController.getUser)
-  .patch(requiresToBeLoggedIn('manageUsers'), validate(userValidation.updateUser), userController.updateUser)
+  .put(requiresToBeLoggedIn('manageUsers'), validate(userValidation.updateUser), userController.updateUser)
   .delete(requiresToBeLoggedIn('manageUsers'), validate(userValidation.deleteUser), userController.deleteUser);
 
 module.exports = router;
